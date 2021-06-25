@@ -1,15 +1,15 @@
 #!/bin/bash
 set -xe
 
-run_duration="${RUN_DURATION:-60}"
+run_duration="${RUN_DURATION:-10}"
 
 export GOMAXPROCS=1
 
 rm -rf output/*
 mkdir -p output
 
-for cmd in "httpaf_eio.exe" "rust_hyper.exe" "cohttp_lwt_unix.exe" "httpaf_lwt.exe" "httpaf_effects.exe" "nethttp_go.exe"; do
-  for rps in 1000 25000 50000 75000 100000 150000; do
+for cmd in "httpaf_eio.exe" "rust_hyper.exe" "httpaf_effects.exe"; do
+  for rps in 100000 200000 400000 600000; do
     for cons in 1000; do
       ./build/$cmd &
       running_pid=$!
