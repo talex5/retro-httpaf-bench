@@ -37,12 +37,10 @@ let log_connection_error ex =
 let run_domain ssock =
   traceln "Running server in domain %d" (Domain.self () :> int);
   Switch.top @@ fun sw ->
-  let handle_connection = Httpaf_eio.Server.create_connection_handler ~request_handler ~error_handler in
+  let handle_connection = Httpaf_eio.Server.create_connection_handler request_handler ~error_handler in
   (* Wait for clients, and fork off echo servers. *)
   while true do
-      Eio.Net.accept_sub ssock ~sw ~on_error:log_connection_error (fun ~sw client_sock client_addr ->
-          handle_connection ~sw client_addr client_sock
-      )
+    Eio.Net.accept_sub ssock ~sw ~on_error:log_connection_error handle_connection
   done
 
 let main ~net ~domain_mgr ~n_domains port backlog =
