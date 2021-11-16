@@ -36,7 +36,7 @@ let log_connection_error ex =
 
 let run_domain ssock =
   traceln "Running server in domain %d" (Domain.self () :> int);
-  Switch.top @@ fun sw ->
+  Switch.run @@ fun sw ->
   let handle_connection = Httpaf_eio.Server.create_connection_handler request_handler ~error_handler in
   (* Wait for clients, and fork off echo servers. *)
   while true do
@@ -44,7 +44,7 @@ let run_domain ssock =
   done
 
 let main ~net ~domain_mgr ~n_domains port backlog =
-  Switch.top @@ fun sw ->
+  Switch.run @@ fun sw ->
   let ssock = Eio.Net.listen net ~sw ~reuse_addr:true ~backlog @@ `Tcp (Unix.inet_addr_loopback, port) in
   traceln "Echo server listening on 127.0.0.1:%d" port;
   traceln "Starting %d domains..." n_domains;
