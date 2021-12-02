@@ -50,9 +50,8 @@ let main ~net ~domain_mgr ~n_domains port backlog =
   traceln "Starting %d domains..." n_domains;
   for _ = 2 to n_domains do
     Fibre.fork_ignore ~sw (fun () ->
-        ignore @@ Eio.Domain_manager.run_compute_unsafe domain_mgr
+        ignore @@ Eio.Domain_manager.run domain_mgr
           (fun () ->
-             Eio_linux.run ~queue_depth:2048 @@ fun _env ->
              (* Note: really we should dup [ssock] for each domain,
                 but [run_domain] won't close it anyway. *)
              run_domain ssock
