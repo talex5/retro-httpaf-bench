@@ -49,8 +49,8 @@ let main ~net ~domain_mgr ~n_domains port backlog =
   traceln "Echo server listening on 127.0.0.1:%d" port;
   traceln "Starting %d domains..." n_domains;
   for _ = 2 to n_domains do
-    Fibre.fork_ignore ~sw (fun () ->
-        ignore @@ Eio.Domain_manager.run domain_mgr
+    Fibre.fork ~sw (fun () ->
+        Eio.Domain_manager.run domain_mgr
           (fun () ->
              (* Note: really we should dup [ssock] for each domain,
                 but [run_domain] won't close it anyway. *)
