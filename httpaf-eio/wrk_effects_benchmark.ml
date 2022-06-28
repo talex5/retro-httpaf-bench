@@ -40,7 +40,7 @@ let run_domain ssock =
   let handle_connection = Httpaf_eio.Server.create_connection_handler request_handler ~error_handler in
   (* Wait for clients, and fork off echo servers. *)
   while true do
-    Eio.Net.accept_sub ssock ~sw ~on_error:log_connection_error handle_connection
+    Eio.Net.accept_fork ssock ~sw ~on_error:log_connection_error handle_connection
   done
 
 let main ~net ~domain_mgr ~n_domains port backlog =
