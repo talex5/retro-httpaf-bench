@@ -77,12 +77,17 @@ let () =
   let trace_config = Ctf.Control.make buffer in
   Ctf.Control.start trace_config;
 *)
-  (* Eio_luv.run @@ fun env -> *)
   Eio_linux.run ~queue_depth:2048 ?polling_timeout @@ fun env ->
+  (*   Eio_main.run @@ fun env -> *)
   let n_domains =
-    match Sys.getenv_opt "HTTPAF_EIO_DOMAINS" with
-    | Some d -> int_of_string d
-    | None -> 1
+    match Sys.argv with
+    | [| _; n |] -> int_of_string n
+    | [| _ |] ->
+      begin match Sys.getenv_opt "HTTPAF_EIO_DOMAINS" with
+      | Some d -> int_of_string d
+      | None -> 1
+      end
+    | _ -> failwith "usage: wrk_effects_benchmark [n_domains]"
   in
   main 8080 128
     ~net:(Eio.Stdenv.net env)
